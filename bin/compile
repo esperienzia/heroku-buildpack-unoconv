@@ -10,30 +10,30 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 VENDOR_DIR="$BUILD_DIR/vendor"
 mkdir -p $VENDOR_DIR
-INSTALL_DIR="$VENDOR_DIR/unconv"
+INSTALL_DIR="$VENDOR_DIR/unoconv"
 mkdir -p $INSTALL_DIR
-UNCONV_VERSION="0.7"
+UNOCONV_VERSION="0.7"
 CACHE_FILE="$CACHE_DIR/unoconv-0.7.tar.gz"
 
 if [ ! -f $CACHE_FILE ]; then
     # install unoconv
-    UNCONV_FILE="unoconv-0.7.tar.gz"
-    UNCONV_DIR="unconv-0.7"
-    # SSL cert used on unconv not recognized by heroku.
-    UNCONV_URL="http://github.com/esperienzia/heroku-buildpack-unoconv/raw/master/heroku-binary/unoconv-0.7.tar.gz"
+    UNOCONV_FILE="unoconv-0.7.tar.gz"
+    UNOCONV_DIR="unoconv-0.7"
+    # SSL cert used on unoconv not recognized by heroku.
+    UNOCONV_URL="http://github.com/esperienzia/heroku-buildpack-unoconv/raw/master/heroku-binary/unoconv-0.7.tar.gz"
 
-    echo "-----> Downloading unoconv from $UNCONV_URL"
-    wget $UNCONV_URL -P $BUILD_DIR | indent
+    echo "-----> Downloading unoconv from $UNOCONV_URL"
+    wget $UNOCONV_URL -P $BUILD_DIR | indent
 
-    echo "-----> Extracting unconv from $BUILD_DIR/$UNCONV_FILE"
-    if [ ! -f $BUILD_DIR/$UNCONV_FILE ]; then
-    echo "Error: Unable to download unconv" | indent
+    echo "-----> Extracting unoconv from $BUILD_DIR/$UNOCONV_FILE"
+    if [ ! -f $BUILD_DIR/$UNOCONV_FILE ]; then
+    echo "Error: Unable to download unoconv" | indent
     ls $BUILD_DIR | indent
     exit 1;
     fi
-    tar xvf $BUILD_DIR/$UNCONV_FILE | indent
+    tar xvf $BUILD_DIR/$UNOCONV_FILE | indent
 
-    echo "-----> Building unconv"
+    echo "-----> Building unoconv"
     cd $UNOCONV_URL
     export CPPFLAGS="-I$INSTALL_DIR/include"
     export LDFLAGS="-L$INSTALL_DIR/lib"
@@ -43,7 +43,7 @@ if [ ! -f $CACHE_FILE ]; then
     rm -rf $UNOCONV_URL
 
     # cache for future deploys
-    echo "-----> Caching unconv installation"
+    echo "-----> Caching unoconv installation"
     cd $VENDOR_DIR
     REL_INSTALL_DIR="unoconv"
     tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
@@ -62,4 +62,4 @@ ACTUAL_INSTALL_PATH="$HOME/vendor/unoconv"
 mkdir -p $(dirname $PROFILE_PATH)
 echo "export PATH=$ACTUAL_INSTALL_PATH/bin:\$PATH" >> $PROFILE_PATH
 echo "export LD_LIBRARY_PATH=$ACTUAL_INSTALL_PATH/lib:\$LD_LIBRARY_PATH" >> $PROFILE_PATH
-echo "export UNCONV_CONFIGURE_PATH=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
+echo "export UNOCONV_CONFIGURE_PATH=$ACTUAL_INSTALL_PATH" >> $PROFILE_PATH
