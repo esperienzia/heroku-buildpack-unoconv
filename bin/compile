@@ -5,7 +5,8 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 APT_DIR=$BUILD_DIR/.apt
-mkdir -p $(dirname $APT_DIR)
+UNOCONV_DIR=$APT_DIR/usr/bin/unoconv
+mkdir -p $(dirname $UNOCONV_DIR)
 
 arrow() {
   sed -u 's/^/-----> /'
@@ -23,7 +24,7 @@ echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/.apt/usr/lib/libreoffice/pr
 echo 'export PYTHONPATH="/app/.apt/usr/lib/python3/dist-packages/"' >>  $PROFILE_PATH
 
 SHEBANG="#!\/usr\/bin\/env python3.6"
-sed -i "1s/.*/$SHEBANG/" $APT_DIR/usr/bin/unoconv
+sed -i "1s/.*/$SHEBANG/" $UNOCONV_DIR
 
 cd $APT_DIR/usr/lib/x86_64-linux-gnu
 ln -sv ../libreoffice/program/*.so .
