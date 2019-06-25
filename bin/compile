@@ -1,37 +1,5 @@
 #!/bin/bash
 
-set -e
-
-BUILD_DIR=$1
-CACHE_DIR=$2
-APT_DIR=$BUILD_DIR/.apt
-UNOCONV_DIR=$APT_DIR/usr/bin/unoconv
-mkdir -p $(dirname $UNOCONV_DIR)
-
-arrow() {
-  sed -u 's/^/-----> /'
-}
-
-echo "LibreOffice: Setting PATH" | arrow
-PROFILE_PATH="$BUILD_DIR/.profile.d/libreoffice.sh"
-mkdir -p $(dirname $PROFILE_PATH)
-
-# Add vendor binaries to the path
-echo 'export OFFICE_PATH="$HOME/.apt/usr/lib/libreoffice"' >> $PROFILE_PATH
-echo 'export UNO_PATH="$OFFICE_PATH"' >> $PROFILE_PATH
-
-echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/.apt/usr/lib/libreoffice/program"' >> $PROFILE_PATH
-echo 'export PYTHONPATH="/app/.apt/usr/lib/python3/dist-packages/"' >>  $PROFILE_PATH
-
-SHEBANG="#!\/usr\/bin\/env python3.6"
-sed -i "1s/.*/$SHEBANG/" $UNOCONV_DIR
-
-cd $APT_DIR/usr/lib/x86_64-linux-gnu
-ln -sv ../libreoffice/program/*.so .
-
-
-#!/bin/bash
-
 indent() {
 sed -u 's/^/       /'
 }
@@ -52,32 +20,32 @@ if [ ! -f $CACHE_FILE ]; then
     UNCONV_FILE="unoconv-$UNOCONV_VERSION.tar.xz"
     UNCONV_DIR="unconv-$UNOCONV_VERSION"
     # SSL cert used on unconv not recognized by heroku.
-    UNCONV_URL="http://www.imagemagick.org/download/releases/$IMAGE_MAGICK_FILE"
+    UNCONV_URL="http://github.com/esperienzia/heroku-buildpack-unoconv/raw/master/heroku-binary/unoconv-0.7.tar.gz"
 
-    echo "-----> Downloading ImageMagick from $IMAGE_MAGICK_URL"
-    wget $IMAGE_MAGICK_URL -P $BUILD_DIR | indent
+    echo "-----> Downloading ImageMagick from $UNCONV_URL"
+    wget $UNCONV_URL -P $BUILD_DIR | indent
 
-    echo "-----> Extracting ImageMagick from $BUILD_DIR/$IMAGE_MAGICK_FILE"
-    if [ ! -f $BUILD_DIR/$IMAGE_MAGICK_FILE ]; then
+    echo "-----> Extracting ImageMagick from $BUILD_DIR/$UNCONV_FILE"
+    if [ ! -f $BUILD_DIR/$UNCONV_FILE ]; then
     echo "Error: Unable to download ImageMagick" | indent
     ls $BUILD_DIR | indent
     exit 1;
     fi
-    tar xvf $BUILD_DIR/$IMAGE_MAGICK_FILE | indent
+    tar xvf $BUILD_DIR/$UNCONV_FILE | indent
 
-    echo "-----> Building ImageMagick"
-    cd $IMAGE_MAGICK_DIR
+    echo "-----> Building unconv"
+    cd $UNOCONV_URL
     export CPPFLAGS="-I$INSTALL_DIR/include"
     export LDFLAGS="-L$INSTALL_DIR/lib"
     ./configure --prefix=$INSTALL_DIR --without-gvc
     make && make install
     cd ..
-    rm -rf $IMAGE_MAGICK_DIR
+    rm -rf $UNOCONV_URL
 
     # cache for future deploys
     echo "-----> Caching ImageMagick installation"
     cd $VENDOR_DIR
-    REL_INSTALL_DIR="imagemagick"
+    REL_INSTALL_DIR="unoconv"
     tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
     mv $REL_INSTALL_DIR.tar.gz $CACHE_FILE
 
