@@ -27,7 +27,7 @@ if [ ! -f $CACHE_FILE ]; then
 
     echo "-----> Extracting unconv from $BUILD_DIR/$UNCONV_FILE"
     if [ ! -f $BUILD_DIR/$UNCONV_FILE ]; then
-    echo "Error: Unable to download ImageMagick" | indent
+    echo "Error: Unable to download unconv" | indent
     ls $BUILD_DIR | indent
     exit 1;
     fi
@@ -43,7 +43,7 @@ if [ ! -f $CACHE_FILE ]; then
     rm -rf $UNOCONV_URL
 
     # cache for future deploys
-    echo "-----> Caching ImageMagick installation"
+    echo "-----> Caching unconv installation"
     cd $VENDOR_DIR
     REL_INSTALL_DIR="unoconv"
     tar czf $REL_INSTALL_DIR.tar.gz $REL_INSTALL_DIR
