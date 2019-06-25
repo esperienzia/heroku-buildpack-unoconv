@@ -13,7 +13,7 @@ mkdir -p $VENDOR_DIR
 INSTALL_DIR="$VENDOR_DIR/unoconv"
 mkdir -p $INSTALL_DIR
 UNOCONV_VERSION="0.7"
-CACHE_FILE="$CACHE_DIR/unoconv-0.7.tar.gz"
+CACHE_FILE="$CACHE_DIR/unoconv-0.8.tar.gz"
 
 if [ ! -f $CACHE_FILE ]; then
     # install unoconv
